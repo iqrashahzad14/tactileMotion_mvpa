@@ -1,4 +1,4 @@
-function accu = calculateMvpa(opt, roiSource)
+function accu = calculateMvpa(opt)
 
 % main function which loops through masks and subjects to calculate the
 % decoding accuracies for given conditions.
@@ -10,31 +10,28 @@ function accu = calculateMvpa(opt, roiSource)
   funcFWHM = opt.funcFWHM;
 
   % choose masks to be used
-  opt = chooseMask(opt, roiSource);
+  opt = chooseMask(opt);
+    
 
   %% set output folder/name
   savefileMat = fullfile(opt.pathOutput, ...
                          [opt.taskName, ...
-                          'Decoding_', ...
-                          roiSource, ...
-                          '_s', num2str(funcFWHM), ...
+                          '_smoothing', num2str(funcFWHM), ...
                           '_ratio', num2str(opt.mvpa.ratioToKeep), ...
                           '_', datestr(now, 'yyyymmddHHMM'), '.mat']);
 
   savefileCsv = fullfile(opt.pathOutput, ...
                          [opt.taskName, ...
-                          'Decoding_', ...
-                          roiSource, ...
-                          '_s', num2str(funcFWHM), ...
-                          '_ratio', num2str(opt.mvpa.ratioToKeep ), ...
+                          '_smoothing', num2str(funcFWHM), ...
+                          '_ratio', num2str(opt.mvpa.ratioToKeep), ...
                           '_', datestr(now, 'yyyymmddHHMM'), '.csv']);
 
   %% MVPA options
 
   % set cosmo mvpa structure
-  condLabelNb = [1 2];
-  condLabelName = {'simple', 'complex'};
-  decodingCondition = 'simpleVscomplex';
+  condLabelNb = [1 2 3 4];
+  condLabelName = {'visual_vertical', 'visual_horizontal', 'tactile_vertical', 'tactile_horizontal'};
+  decodingCondition = 'tactile_vertical_vs_tactile_horizontal';%'visual_vertical_vs_visual_horizontal';%
 
   %% let's get going!
 
@@ -70,9 +67,9 @@ function accu = calculateMvpa(opt, roiSource)
 
         % choose the mask
         mask = fullfile(opt.maskPath, opt.maskName{iMask});
-        if strcmp(roiSource, 'freesurfer') || strcmp(roiSource, 'hmat')
-          mask = fullfile(opt.maskPath, subFolder, [opt.maskBaseName, opt.maskName{iMask}]);
-        end
+%         if strcmp(roiSource, 'freesurfer') || strcmp(roiSource, 'hmat')
+%           mask = fullfile(opt.maskPath, subFolder, [opt.maskBaseName, opt.maskName{iMask}]);
+%         end
 
         % display the used mask
         disp(opt.maskName{iMask});
@@ -93,7 +90,7 @@ function accu = calculateMvpa(opt, roiSource)
 
         % slice the ds according to your targers (choose your
         % train-test conditions
-        ds = cosmo_slice(ds, ds.sa.targets == 1 | ds.sa.targets == 2);
+        ds = cosmo_slice(ds, ds.sa.targets == 3 | ds.sa.targets == 4);%%
 
         % remove constant features
         ds = cosmo_remove_useless_data(ds);
@@ -158,7 +155,7 @@ function accu = calculateMvpa(opt, roiSource)
         accu(count).accuracy = accuracy;
         accu(count).prediction = pred;
         accu(count).imagePath = image;
-        accu(count).roiSource = roiSource;
+%         accu(count).roiSource = roiSource;
         accu(count).decodingCondition = decodingCondition;
 
         %% PERMUTATION PART

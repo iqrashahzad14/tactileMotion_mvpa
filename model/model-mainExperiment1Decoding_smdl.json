@@ -1,0 +1,26 @@
+{
+  "Name": "mainExperiment1",
+  "Description": "contrasts for the main Experiment1 dataset",
+  "Input": {
+    "task": "mainExperiment1"
+  },
+  "Steps": [
+    {
+      "Level": "run",
+      "Model": {
+        "X": [
+          "trial_type.visual_vertical",
+          "trial_type.visual_horizontal",
+          "trial_type.tactile_vertical",
+          "trial_type.tactile_horizontal",
+          "trans_x", "trans_y", "trans_z", "rot_x", "rot_y", "rot_z"
+        ]
+      },
+      "AutoContrasts": [
+        "trial_type.visual_vertical",
+        "trial_type.visual_horizontal",
+        "trial_type.tactile_vertical",
+        "trial_type.tactile_horizontal"]
+    }
+  ]
+}

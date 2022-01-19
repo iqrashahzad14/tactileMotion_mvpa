@@ -1,6 +1,6 @@
 % (C) Copyright 2019 CPP BIDS SPM-pipeline developpers
 
-function opt = getOptionBlockMvpa()
+function opt = getOptionMvpa()
   % returns a structure that contains the options chosen by the user to run
   % decoding with cosmo-mvpa.
 
@@ -9,35 +9,28 @@ function opt = getOptionBlockMvpa()
   end
 
   % suject to run in each group
-%   opt.subjects = {'001'};
-  opt.subjects = {'002', '003', '004', '005', '006',...
-                  '007', '008', '009', '010', '011', ...
-                  '012', '013', '014','015', '016', '017', ...
-                  '018', '019', '020', '021', '023'};
-%   opt.subjects = {'012', '013', '014','015', '016', '017', ...
-%                   '018', '019', '020', '021', '023'};
-
-    
+  opt.subjects = {'001','002'};
+  
   % Uncomment the lines below to run preprocessing
   % - don't use realign and unwarp
   opt.realign.useUnwarp = true;
 
   % we stay in native space (that of the T1)
-  opt.space = 'individual'; % 'individual', 'MNI'
+  opt.space ='MNI';
 
   % The directory where the data are located
   opt.dataDir = fullfile(fileparts(mfilename('fullpath')), ...
                          '..', '..', '..', 'raw');
-  opt.derivativesDir = fullfile(opt.dataDir, '..', 'derivatives', 'cpp_spm');
+  opt.derivativesDir = fullfile(opt.dataDir, '..', 'derivatives', 'cpp_spm-stats'); %%??which data is it reading?
 
   opt.pathOutput = fullfile(opt.dataDir, '..', 'derivatives', 'cosmoMvpa');
 
   % multivariate
   opt.model.file = fullfile(fileparts(mfilename('fullpath')), '..', ...
-                            'model', 'model-RhythmBlockDecoding1_smdl.json');
+                            'model', 'model-mainExperiment1Decoding_smdl.json');
 
   % task to analyze
-  opt.taskName = 'RhythmBlock';
+  opt.taskName = 'mainExperiment1';
 
   opt.parallelize.do = false;
   opt.parallelize.nbWorkers = 1;
@@ -51,25 +44,25 @@ function opt = getOptionBlockMvpa()
   %% mvpa options
 
   % define the 4D maps to be used
-  opt.funcFWHM = 2;
+  opt.funcFWHM = 0;
 
-  % take the most responsive xx nb of voxels
-  opt.mvpa.ratioToKeep = 300; % 100 150 250 350 420
+%   % take the most responsive xx nb of voxels
+%   opt.mvpa.ratioToKeep = 196; % 100 150 250 350 420
 
   % set which type of ffx results you want to use
   opt.mvpa.map4D = {'beta', 't_maps'};
 
   % design info
-  opt.mvpa.nbRun = 9;
-  opt.mvpa.nbTrialRepetition = 1;
+  opt.mvpa.nbRun = 6;
+  opt.mvpa.nbTrialRepetition = 1;%??? repititons of conditions in 1run
 
   % cosmo options
   opt.mvpa.tool = 'cosmo';
   % opt.mvpa.normalization = 'zscore';
-  opt.mvpa.child_classifier = @cosmo_classify_libsvm;
+  opt.mvpa.child_classifier = @cosmo_classify_libsvm; 
   opt.mvpa.feature_selector = @cosmo_anova_feature_selector;
 
   % permute the accuracies ?
-  opt.mvpa.permutate = 1;
+  opt.mvpa.permutate = 0; %%% will need this later
 
 end
