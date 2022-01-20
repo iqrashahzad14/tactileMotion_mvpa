@@ -5,6 +5,7 @@ function accu = calculateMvpa(opt)
 % dependant on SPM + CPP_SPM and CosMoMvpa toolboxes
 % the output is compatible for R visualisation, it gives .csv file as well
 % as .mat file 
+% 1 run = 8 blocks= (vis_vert, vis_hor, tact_vert, tac_hor,vis_vert, vis_hor, tact_vert, tac_hor, ) in random order
 
   % get the smoothing parameter for 4D map
   funcFWHM = opt.funcFWHM;
