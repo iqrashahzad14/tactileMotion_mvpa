@@ -50,10 +50,10 @@ function maskVoxel = calculateMaskSize(opt)
 
         % slice the ds according to your targers (choose your
         % train-test conditions
-        ds = cosmo_slice(ds, ds.sa.targets == 1 | ds.sa.targets == 2);%%??
+%         ds = cosmo_slice(ds, ds.sa.targets == 1 | ds.sa.targets == 2);%%??
 
         % remove constant features
-        ds = cosmo_remove_useless_data(ds);
+%         ds = cosmo_remove_useless_data(ds);
 
         % calculate the mask size
         maskVoxel = size(ds.samples, 2);

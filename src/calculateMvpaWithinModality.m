@@ -1,11 +1,10 @@
-function accu = calculateMvpa(opt)
+function accu = calculateMvpaWithinModality(opt)
 
 % main function which loops through masks and subjects to calculate the
 % decoding accuracies for given conditions.
 % dependant on SPM + CPP_SPM and CosMoMvpa toolboxes
 % the output is compatible for R visualisation, it gives .csv file as well
 % as .mat file 
-% 1 run = 8 blocks= (vis_vert, vis_hor, tact_vert, tac_hor,vis_vert, vis_hor, tact_vert, tac_hor, ) in random order
 
   % get the smoothing parameter for 4D map
   funcFWHM = opt.funcFWHM;
@@ -14,15 +13,17 @@ function accu = calculateMvpa(opt)
   opt = chooseMask(opt);
     
 
-  %% set output folder/name
+  % set output folder/name
   savefileMat = fullfile(opt.pathOutput, ...
                          [opt.taskName, ...
+                         'WithinModality',...
                           '_smoothing', num2str(funcFWHM), ...
                           '_ratio', num2str(opt.mvpa.ratioToKeep), ...
                           '_', datestr(now, 'yyyymmddHHMM'), '.mat']);
 
   savefileCsv = fullfile(opt.pathOutput, ...
                          [opt.taskName, ...
+                         'WithinModality',...
                           '_smoothing', num2str(funcFWHM), ...
                           '_ratio', num2str(opt.mvpa.ratioToKeep), ...
                           '_', datestr(now, 'yyyymmddHHMM'), '.csv']);
@@ -30,9 +31,10 @@ function accu = calculateMvpa(opt)
   %% MVPA options
 
   % set cosmo mvpa structure
-  condLabelNb = [1 2 3 4];
+  condLabelNb = [1 2 3 4 ];
   condLabelName = {'visual_vertical', 'visual_horizontal', 'tactile_vertical', 'tactile_horizontal'};
-  decodingCondition = 'tactile_vertical_vs_tactile_horizontal';%'visual_vertical_vs_visual_horizontal';%
+  decodingConditionList = {'visual_vertical_vs_visual_horizontal', 'tactile_vertical_vs_tactile_horizontal'};
+ 
 
   %% let's get going!
 
@@ -78,7 +80,11 @@ function accu = calculateMvpa(opt)
         % 4D image
         imageName = ['4D_', opt.mvpa.map4D{iImage}, '_', num2str(funcFWHM), '.nii'];
         image = fullfile(ffxDir, imageName);
-
+        
+        for iDecodingCondition=1:length(decodingConditionList) %see the types in decoing conditionlist
+            decodingCondition=decodingConditionList(iDecodingCondition);
+            
+            
         % load cosmo input
         ds = cosmo_fmri_dataset(image, 'mask', mask);
 
@@ -88,10 +94,15 @@ function accu = calculateMvpa(opt)
 
         % set cosmo structure
         ds = setCosmoStructure(opt, ds, condLabelNb, condLabelName);
-
         % slice the ds according to your targers (choose your
         % train-test conditions
-        ds = cosmo_slice(ds, ds.sa.targets == 3 | ds.sa.targets == 4);%%
+        if strcmp (decodingCondition, decodingConditionList(1))==1
+                ds = cosmo_slice(ds, ds.sa.targets == condLabelNb(1) | ds.sa.targets == condLabelNb(2));
+        elseif strcmp (decodingCondition, decodingConditionList(2)) ==1
+                ds = cosmo_slice(ds, ds.sa.targets == condLabelNb(3) | ds.sa.targets == condLabelNb(4));
+        end
+        
+        
 
         % remove constant features
         ds = cosmo_remove_useless_data(ds);
@@ -101,7 +112,7 @@ function accu = calculateMvpa(opt)
 
         % partitioning, for test and training : cross validation
         partitions = cosmo_nfold_partitioner(ds);
-
+        
         % define the voxel number for feature selection
         % set ratio to keep depending on the ROI dimension
         % if SMA, double the voxel number
@@ -192,6 +203,7 @@ function accu = calculateMvpa(opt)
         fprintf(['Sub'  subID ' - area: ' opt.maskLabel{iMask} ...
                  ', accuracy: ' num2str(accuracy) '\n\n\n']);
 
+        end
       end
     end
   end

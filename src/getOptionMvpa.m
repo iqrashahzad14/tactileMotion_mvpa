@@ -54,7 +54,7 @@ function opt = getOptionMvpa()
 
   % design info
   opt.mvpa.nbRun = 6;
-  opt.mvpa.nbTrialRepetition = 1;%??? repititons of conditions in 1run
+  opt.mvpa.nbTrialRepetition = 1;%
 
   % cosmo options
   opt.mvpa.tool = 'cosmo';
