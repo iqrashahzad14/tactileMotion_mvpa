@@ -1,4 +1,4 @@
-function accu = calculateMvpa(opt)
+function accu = calculateMvpaOLDVERSION(opt)
 
 % main function which loops through masks and subjects to calculate the
 % decoding accuracies for given conditions.

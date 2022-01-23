@@ -31,11 +31,11 @@ clc;
     maskVoxel = calculateMaskSize(opt);
     
     % take the most responsive xx nb of voxels
-  opt.mvpa.ratioToKeep = 65; % 100 150 250 350 420
+  opt.mvpa.ratioToKeep = 250; %363;%157 for sub-001 and 392 for sub-002 % 100 150 250 350 420
   
-  accuracy = calculateMvpa(opt);
+%   accuracy = calculateMvpa(opt);
   
-  accuracy = calculateMvpaAllPairs(opt);
-  
+  accuracyWithinModality = calculateMvpaWithinModality(opt);
+  accuracyCrossModal = calculateMvpaCrossModal(opt);
   
   
