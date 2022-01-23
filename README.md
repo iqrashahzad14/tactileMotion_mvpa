@@ -1,1 +1,1 @@
-rhythmBlock_mvpa
+this repo contains cosmomvpa codes
