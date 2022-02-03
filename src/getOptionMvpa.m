@@ -44,7 +44,7 @@ function opt = getOptionMvpa()
   %% mvpa options
 
   % define the 4D maps to be used
-  opt.funcFWHM = 0;
+  opt.funcFWHM = 2;
 
 %   % take the most responsive xx nb of voxels
 %   opt.mvpa.ratioToKeep = 196; % 100 150 250 350 420
@@ -63,6 +63,6 @@ function opt = getOptionMvpa()
   opt.mvpa.feature_selector = @cosmo_anova_feature_selector;
 
   % permute the accuracies ?
-  opt.mvpa.permutate = 0; %%% will need this later
+  opt.mvpa.permutate = 1; %%% will need this later
 
 end
